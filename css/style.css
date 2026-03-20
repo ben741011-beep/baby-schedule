@@ -45,7 +45,7 @@ body {
 /* ===== Quick Actions ===== */
 #quick-actions {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
   gap: 8px;
   padding: 16px;
 }
@@ -72,8 +72,34 @@ body {
 .action-btn.diaper { background: linear-gradient(135deg, #55efc4, #00b894); }
 .action-btn.temp { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); color: #8B6914; }
 .action-btn.pump { background: linear-gradient(135deg, #fab1a0, #e17055); }
+.action-btn.custom { background: linear-gradient(135deg, #dfe6e9, #b2bec3); color: #2d3436; }
+.action-btn.add-type { background: #FFF; color: #999; border: 2px dashed #ddd; box-shadow: none; }
+.action-btn.add-type:active { background: #f8f8f8; }
 .action-icon { font-size: 28px; }
 .action-label { font-size: 13px; }
+
+/* ===== Emoji Picker ===== */
+.emoji-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.emoji-opt {
+  font-size: 24px;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+}
+.emoji-opt.selected {
+  border-color: var(--primary);
+  background: #FFF0F3;
+}
 
 /* ===== Card ===== */
 .card {
@@ -92,7 +118,7 @@ body {
 /* ===== Summary Grid ===== */
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
   gap: 6px;
 }
 .summary-item {

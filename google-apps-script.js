@@ -26,14 +26,15 @@ function doPost(e) {
     const action = data.action;
 
     if (action === 'add') {
-      const sheet = getOrCreateSheet(ss, data.sheet);
+      const sheet = getOrCreateSheet(ss, data.sheet, data.headers);
       sheet.appendRow(data.row);
       return jsonResponse({ status: 'ok', message: '已記錄！' });
     }
 
     if (action === 'getToday') {
       const result = {};
-      const sheets = ['餵奶', '睡覺', '換尿布', '體溫', '擠奶'];
+      // Accept dynamic sheet names from client
+      const sheets = data.sheets || ['餵奶', '睡覺', '換尿布', '體溫', '擠奶'];
       const today = data.date || Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyy-MM-dd');
 
       sheets.forEach(name => {
@@ -88,7 +89,7 @@ function doGet(e) {
 }
 
 // ====== 工具函式 ======
-function getOrCreateSheet(ss, name) {
+function getOrCreateSheet(ss, name, customHeaders) {
   let sheet = ss.getSheetByName(name);
   if (!sheet) {
     sheet = ss.insertSheet(name);
@@ -99,9 +100,11 @@ function getOrCreateSheet(ss, name) {
       '體溫': ['日期', '時間', '體溫(°C)', '備註'],
       '擠奶': ['日期', '時間', '側別', '奶量(ml)', '備註'],
     };
-    if (headers[name]) {
-      sheet.getRange(1, 1, 1, headers[name].length).setValues([headers[name]]);
-      sheet.getRange(1, 1, 1, headers[name].length).setFontWeight('bold');
+    // Use custom headers if provided, otherwise fallback to defaults
+    const h = customHeaders || headers[name];
+    if (h) {
+      sheet.getRange(1, 1, 1, h.length).setValues([h]);
+      sheet.getRange(1, 1, 1, h.length).setFontWeight('bold');
       sheet.setFrozenRows(1);
     }
   }

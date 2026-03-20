@@ -19,59 +19,12 @@
 </header>
 
 <!-- ===== 快速記錄按鈕 ===== -->
-<div id="quick-actions">
-  <button class="action-btn milk" onclick="openForm('milk')">
-    <span class="action-icon">🍼</span>
-    <span class="action-label">喝奶</span>
-  </button>
-  <button class="action-btn sleep" onclick="openForm('sleep')">
-    <span class="action-icon">😴</span>
-    <span class="action-label">睡覺</span>
-  </button>
-  <button class="action-btn diaper" onclick="openForm('diaper')">
-    <span class="action-icon">🧷</span>
-    <span class="action-label">尿布</span>
-  </button>
-  <button class="action-btn pump" onclick="openForm('pump')">
-    <span class="action-icon">🤱</span>
-    <span class="action-label">擠奶</span>
-  </button>
-  <button class="action-btn temp" onclick="openForm('temp')">
-    <span class="action-icon">🌡️</span>
-    <span class="action-label">體溫</span>
-  </button>
-</div>
+<div id="quick-actions"></div>
 
 <!-- ===== 今日摘要 ===== -->
 <div id="today-summary" class="card">
   <h2>📋 今日摘要</h2>
-  <div id="summary-stats" class="summary-grid">
-    <div class="summary-item">
-      <div class="summary-icon">🍼</div>
-      <div class="summary-val" id="sum-milk">0</div>
-      <div class="summary-label">次喝奶</div>
-    </div>
-    <div class="summary-item">
-      <div class="summary-icon">💤</div>
-      <div class="summary-val" id="sum-sleep">0</div>
-      <div class="summary-label">次睡覺</div>
-    </div>
-    <div class="summary-item">
-      <div class="summary-icon">🧷</div>
-      <div class="summary-val" id="sum-diaper">0</div>
-      <div class="summary-label">次尿布</div>
-    </div>
-    <div class="summary-item">
-      <div class="summary-icon">🤱</div>
-      <div class="summary-val" id="sum-pump">0</div>
-      <div class="summary-label">次擠奶</div>
-    </div>
-    <div class="summary-item">
-      <div class="summary-icon">💧</div>
-      <div class="summary-val" id="sum-total-ml">0</div>
-      <div class="summary-label">ml 總奶量</div>
-    </div>
-  </div>
+  <div id="summary-stats" class="summary-grid"></div>
 </div>
 
 <!-- ===== 今日時間線 ===== -->
