@@ -32,6 +32,10 @@
     <span class="action-icon">🧷</span>
     <span class="action-label">尿布</span>
   </button>
+  <button class="action-btn pump" onclick="openForm('pump')">
+    <span class="action-icon">🤱</span>
+    <span class="action-label">擠奶</span>
+  </button>
   <button class="action-btn temp" onclick="openForm('temp')">
     <span class="action-icon">🌡️</span>
     <span class="action-label">體溫</span>
@@ -56,6 +60,11 @@
       <div class="summary-icon">🧷</div>
       <div class="summary-val" id="sum-diaper">0</div>
       <div class="summary-label">次尿布</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">🤱</div>
+      <div class="summary-val" id="sum-pump">0</div>
+      <div class="summary-label">次擠奶</div>
     </div>
     <div class="summary-item">
       <div class="summary-icon">💧</div>

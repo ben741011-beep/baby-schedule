@@ -4,7 +4,7 @@
    =================================================================== */
 
 // ====== Config ======
-const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbw-ajlJw6O56b10A-_CpTgFBKykOWqIbMBCSO9NY2f9uqH-Hu1ySqjojgA5CV52ghdenQ/exec';
+const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbwjUUkuHKeNQkaZRESbSzcp7bYNrmIHNTjVEZoK83snOSA-Ri_1dq8rqJlVQqilU0kHDg/exec';
 let SCRIPT_URL = localStorage.getItem('baby-schedule-url') || DEFAULT_URL;
 
 const $ = s => document.querySelector(s);
@@ -51,7 +51,7 @@ async function apiCall(data) {
 
 // ====== State ======
 let currentForm = null;
-let todayData = { '餵奶': [], '睡覺': [], '換尿布': [], '體溫': [] };
+let todayData = { '餵奶': [], '睡覺': [], '換尿布': [], '體溫': [], '擠奶': [] };
 
 function todayStr() {
   const d = new Date();
@@ -88,11 +88,13 @@ function renderSummary() {
   const milkCount = (todayData['餵奶'] || []).length;
   const sleepCount = (todayData['睡覺'] || []).length;
   const diaperCount = (todayData['換尿布'] || []).length;
+  const pumpCount = (todayData['擠奶'] || []).length;
   const totalMl = (todayData['餵奶'] || []).reduce((sum, r) => sum + (parseInt(r['奶量(ml)']) || 0), 0);
 
   $('#sum-milk').textContent = milkCount;
   $('#sum-sleep').textContent = sleepCount;
   $('#sum-diaper').textContent = diaperCount;
+  $('#sum-pump').textContent = pumpCount;
   $('#sum-total-ml').textContent = totalMl;
 }
 
@@ -143,6 +145,16 @@ function renderTimeline() {
       icon: '🌡️',
       sheet: '體溫',
       text: `${r['體溫(°C)']}°C${warn}`,
+      note: r['備註'] || '',
+    });
+  });
+
+  (todayData['擠奶'] || []).forEach(r => {
+    items.push({
+      time: r['時間'] || '',
+      icon: '🤱',
+      sheet: '擠奶',
+      text: `${r['側別'] || ''} ${r['奶量(ml)'] || ''}ml`,
       note: r['備註'] || '',
     });
   });
@@ -268,6 +280,30 @@ function openForm(type) {
         <input type="text" id="f-note" placeholder="選填">
       </div>
     `;
+  } else if (type === 'pump') {
+    title.textContent = '🤱 記錄擠奶';
+    body.innerHTML = `
+      <div class="field">
+        <label>時間</label>
+        <input type="time" id="f-time" value="${now}">
+      </div>
+      <div class="field">
+        <label>側別</label>
+        <div class="radio-group" id="f-pump-side">
+          <div class="radio-option" data-val="左側">⬅️ 左側</div>
+          <div class="radio-option" data-val="右側">➡️ 右側</div>
+          <div class="radio-option selected" data-val="兩側">↔️ 兩側</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>奶量 (ml)</label>
+        <input type="number" id="f-pump-ml" placeholder="例：80" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>備註</label>
+        <input type="text" id="f-note" placeholder="選填">
+      </div>
+    `;
   }
 
   // Radio toggle
@@ -328,6 +364,12 @@ async function submitForm() {
     const temp = $('#f-temp').value || '36.5';
     sheetName = '體溫';
     row = [today, time, parseFloat(temp), note];
+  } else if (currentForm === 'pump') {
+    const time = $('#f-time').value;
+    const side = document.querySelector('#f-pump-side .selected')?.dataset.val || '兩側';
+    const ml = $('#f-pump-ml').value || '0';
+    sheetName = '擠奶';
+    row = [today, time, side, parseInt(ml), note];
   }
 
   const res = await apiCall({ action: 'add', sheet: sheetName, row });

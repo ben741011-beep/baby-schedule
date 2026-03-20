@@ -45,8 +45,8 @@ body {
 /* ===== Quick Actions ===== */
 #quick-actions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
   padding: 16px;
 }
 .action-btn {
@@ -71,6 +71,7 @@ body {
 .action-btn.sleep { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
 .action-btn.diaper { background: linear-gradient(135deg, #55efc4, #00b894); }
 .action-btn.temp { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); color: #8B6914; }
+.action-btn.pump { background: linear-gradient(135deg, #fab1a0, #e17055); }
 .action-icon { font-size: 28px; }
 .action-label { font-size: 13px; }
 
@@ -91,8 +92,8 @@ body {
 /* ===== Summary Grid ===== */
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
 }
 .summary-item {
   text-align: center;

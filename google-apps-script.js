@@ -33,7 +33,7 @@ function doPost(e) {
 
     if (action === 'getToday') {
       const result = {};
-      const sheets = ['餵奶', '睡覺', '換尿布', '體溫'];
+      const sheets = ['餵奶', '睡覺', '換尿布', '體溫', '擠奶'];
       const today = data.date || Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyy-MM-dd');
 
       sheets.forEach(name => {
@@ -97,6 +97,7 @@ function getOrCreateSheet(ss, name) {
       '睡覺': ['日期', '開始時間', '結束時間', '時長(分鐘)', '備註'],
       '換尿布': ['日期', '時間', '類型', '備註'],
       '體溫': ['日期', '時間', '體溫(°C)', '備註'],
+      '擠奶': ['日期', '時間', '側別', '奶量(ml)', '備註'],
     };
     if (headers[name]) {
       sheet.getRange(1, 1, 1, headers[name].length).setValues([headers[name]]);
