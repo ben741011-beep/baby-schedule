@@ -4,7 +4,7 @@
    =================================================================== */
 
 // ====== Config ======
-const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbwjUUkuHKeNQkaZRESbSzcp7bYNrmIHNTjVEZoK83snOSA-Ri_1dq8rqJlVQqilU0kHDg/exec';
+const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbxJc2ZRUIu7yRRT231dY3syylF77m8ERC-Wib9yfW4XRxJInzAXRpOCy491ID3tUOlR/exec';
 let SCRIPT_URL = localStorage.getItem('baby-schedule-url') || DEFAULT_URL;
 
 const $ = s => document.querySelector(s);
