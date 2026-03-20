@@ -1,0 +1,11 @@
+{
+  "name": "寶寶作息表",
+  "short_name": "作息表",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#FFF5F7",
+  "theme_color": "#FF9EAA",
+  "icons": [
+    { "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🍼</text></svg>", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

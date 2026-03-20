@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>寶寶作息表</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🍼</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== 頂部標題 ===== -->
+<header id="app-header">
+  <h1>🍼 寶寶作息表</h1>
+  <span id="today-date"></span>
+</header>
+
+<!-- ===== 快速記錄按鈕 ===== -->
+<div id="quick-actions">
+  <button class="action-btn milk" onclick="openForm('milk')">
+    <span class="action-icon">🍼</span>
+    <span class="action-label">喝奶</span>
+  </button>
+  <button class="action-btn sleep" onclick="openForm('sleep')">
+    <span class="action-icon">😴</span>
+    <span class="action-label">睡覺</span>
+  </button>
+  <button class="action-btn diaper" onclick="openForm('diaper')">
+    <span class="action-icon">🧷</span>
+    <span class="action-label">尿布</span>
+  </button>
+  <button class="action-btn temp" onclick="openForm('temp')">
+    <span class="action-icon">🌡️</span>
+    <span class="action-label">體溫</span>
+  </button>
+</div>
+
+<!-- ===== 今日摘要 ===== -->
+<div id="today-summary" class="card">
+  <h2>📋 今日摘要</h2>
+  <div id="summary-stats" class="summary-grid">
+    <div class="summary-item">
+      <div class="summary-icon">🍼</div>
+      <div class="summary-val" id="sum-milk">0</div>
+      <div class="summary-label">次喝奶</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">💤</div>
+      <div class="summary-val" id="sum-sleep">0</div>
+      <div class="summary-label">次睡覺</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">🧷</div>
+      <div class="summary-val" id="sum-diaper">0</div>
+      <div class="summary-label">次尿布</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">💧</div>
+      <div class="summary-val" id="sum-total-ml">0</div>
+      <div class="summary-label">ml 總奶量</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 今日時間線 ===== -->
+<div id="timeline-section" class="card">
+  <h2>🕐 今日記錄</h2>
+  <div id="timeline"></div>
+  <div id="timeline-empty" class="empty-hint">還沒有記錄，按上方按鈕開始！</div>
+</div>
+
+<!-- ===== 表單 Modal ===== -->
+<div class="overlay hidden" id="form-overlay">
+  <div class="form-card" id="form-card">
+    <div class="form-header">
+      <span id="form-title">記錄</span>
+      <button class="form-close" onclick="closeForm()">✕</button>
+    </div>
+    <div class="form-body" id="form-body"></div>
+    <div class="form-footer">
+      <button class="btn-submit" id="btn-submit" onclick="submitForm()">
+        <span id="btn-submit-text">記錄</span>
+        <span id="btn-submit-loading" class="hidden">⏳ 送出中...</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 狀態提示 ===== -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- ===== 連線設定（首次使用）===== -->
+<div class="overlay" id="setup-overlay">
+  <div class="form-card">
+    <div class="form-header">
+      <span>🔗 連接 Google Sheet</span>
+    </div>
+    <div class="form-body" style="padding: 20px">
+      <p style="margin-bottom:12px;color:#666;font-size:14px">
+        請先到 Google Sheet 部署 Apps Script，<br>
+        然後把網址貼到下方。
+      </p>
+      <p style="margin-bottom:8px;font-size:13px;color:#999">
+        詳細步驟見 <code>google-apps-script.js</code> 檔案頂部的註解
+      </p>
+      <input id="setup-url" type="url" placeholder="https://script.google.com/macros/s/..." 
+             style="width:100%;padding:12px;border:1.5px solid #ddd;border-radius:10px;font-size:14px;margin-top:12px">
+    </div>
+    <div class="form-footer">
+      <button class="btn-submit" onclick="saveSetup()">確認連接</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
+</body>
+</html>
