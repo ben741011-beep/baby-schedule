@@ -39,7 +39,10 @@
   <div class="form-card" id="form-card">
     <div class="form-header">
       <span id="form-title">記錄</span>
-      <button class="form-close" onclick="closeForm()">✕</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="form-delete hidden" id="btn-delete-type" onclick="deleteCurrentType()" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px" title="刪除此項目">🗑️</button>
+        <button class="form-close" onclick="closeForm()">✕</button>
+      </div>
     </div>
     <div class="form-body" id="form-body"></div>
     <div class="form-footer">

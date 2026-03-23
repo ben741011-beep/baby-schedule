@@ -74,6 +74,28 @@ function doPost(e) {
       return jsonResponse({ status: 'ok', data: result, debug: debug });
     }
 
+    if (action === 'update') {
+      const sheet = ss.getSheetByName(data.sheet);
+      if (sheet) {
+        const allData = sheet.getDataRange().getValues();
+        for (let i = allData.length - 1; i >= 1; i--) {
+          const d = allData[i][0];
+          const dateStr = d instanceof Date ? Utilities.formatDate(d, 'Asia/Taipei', 'yyyy-MM-dd') : String(d);
+          const timeStr = allData[i][1] instanceof Date ? Utilities.formatDate(allData[i][1], 'Asia/Taipei', 'HH:mm') : String(allData[i][1]);
+          if (dateStr === data.date && timeStr === data.time) {
+            // Update specific columns
+            if (data.updates) {
+              Object.entries(data.updates).forEach(([colIdx, val]) => {
+                sheet.getRange(i + 1, parseInt(colIdx) + 1).setValue(val);
+              });
+            }
+            break;
+          }
+        }
+      }
+      return jsonResponse({ status: 'ok', message: '已更新！' });
+    }
+
     if (action === 'delete') {
       const sheet = ss.getSheetByName(data.sheet);
       if (sheet) {

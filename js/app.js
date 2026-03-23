@@ -293,8 +293,12 @@ function renderTimeline() {
         text = `${r['類型'] || '母奶'} ${r['奶量(ml)'] || ''}ml`;
       } else if (t.id === 'sleep') {
         time = r['開始時間'] || '';
+        const endTime = r['結束時間'] || '';
         const dur = r['時長(分鐘)'] ? ` (${r['時長(分鐘)']}分鐘)` : '';
-        text = `${r['開始時間'] || ''} ~ ${r['結束時間'] || '進行中'}${dur}`;
+        const inProgress = !endTime;
+        text = `${r['開始時間'] || ''} ~ ${endTime || '進行中'}${dur}`;
+        items.push({ time, icon: t.icon, sheet: t.sheetName, text, note: r['備註'] || '', sleepInProgress: inProgress });
+        return; // skip the push below
       } else if (t.id === 'diaper') {
         time = r['時間'] || '';
         text = r['類型'] || '';
@@ -327,6 +331,9 @@ function renderTimeline() {
   items.forEach(item => {
     const el = document.createElement('div');
     el.className = 'timeline-item';
+    const endBtn = item.sleepInProgress
+      ? `<button class="tl-end-sleep" title="結束睡覺" data-time="${item.time}" style="background:#ff9800;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:13px;cursor:pointer;white-space:nowrap">⏰ 結束</button>`
+      : '';
     el.innerHTML = `
       <span class="tl-time">${item.time}</span>
       <span class="tl-icon">${item.icon}</span>
@@ -334,6 +341,7 @@ function renderTimeline() {
         ${item.text}
         ${item.note ? `<br><small>${item.note}</small>` : ''}
       </div>
+      ${endBtn}
       <button class="tl-delete" title="刪除" data-sheet="${item.sheet}" data-time="${item.time}">🗑️</button>
     `;
     tl.appendChild(el);
@@ -347,6 +355,44 @@ function renderTimeline() {
       loadToday();
     });
   });
+
+  // 結束睡覺按鈕
+  tl.querySelectorAll('.tl-end-sleep').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openEndSleep(btn.dataset.time);
+    });
+  });
+}
+
+// ====== 結束睡覺彈窗 ======
+function openEndSleep(startTime) {
+  currentForm = '__end_sleep__';
+  window._endSleepStartTime = startTime;
+
+  const body = $('#form-body');
+  const title = $('#form-title');
+  const now = nowTime();
+
+  title.textContent = '😴 結束睡覺';
+
+  // 隱藏刪除按鈕
+  const deleteBtn = document.getElementById('btn-delete-type');
+  if (deleteBtn) deleteBtn.classList.add('hidden');
+
+  body.innerHTML = `
+    <div class="field">
+      <label>開始時間</label>
+      <input type="time" value="${startTime}" disabled style="opacity:0.6">
+    </div>
+    <div class="field">
+      <label>結束時間</label>
+      <input type="time" id="f-sleep-end-update" value="${now}">
+    </div>
+  `;
+
+  // 改按鈕文字
+  $('#btn-submit-text').textContent = '確認結束';
+  $('#form-overlay').classList.remove('hidden');
 }
 
 // ====== Forms ======
@@ -360,6 +406,13 @@ function openForm(typeId) {
   const title = $('#form-title');
   const overlay = $('#form-overlay');
   const now = nowTime();
+
+  // 顯示/隱藏刪除按鈕（只有自訂類型才顯示）
+  const deleteBtn = document.getElementById('btn-delete-type');
+  if (deleteBtn) {
+    const isCustom = t.id.startsWith('custom_');
+    deleteBtn.classList.toggle('hidden', !isCustom);
+  }
 
   // 內建類型
   if (typeId === 'milk') {
@@ -437,6 +490,7 @@ function openForm(typeId) {
 
 function closeForm() {
   $('#form-overlay').classList.add('hidden');
+  $('#btn-submit-text').textContent = '記錄';
   currentForm = null;
 }
 
@@ -447,6 +501,31 @@ async function submitForm() {
   btn.disabled = true;
   textEl.classList.add('hidden');
   loadEl.classList.remove('hidden');
+
+  // 處理結束睡覺
+  if (currentForm === '__end_sleep__') {
+    const endTime = $('#f-sleep-end-update').value;
+    const startTime = window._endSleepStartTime;
+    if (!endTime) { showToast('❌ 請輸入結束時間'); btn.disabled = false; textEl.classList.remove('hidden'); loadEl.classList.add('hidden'); return; }
+    // 計算時長
+    const [sh, sm] = startTime.split(':').map(Number);
+    const [eh, em] = endTime.split(':').map(Number);
+    let dur = (eh * 60 + em) - (sh * 60 + sm);
+    if (dur < 0) dur += 24 * 60;
+    // 更新 Sheet：col 2=結束時間, col 3=時長
+    const res = await apiCall({ action: 'update', sheet: '睡覺', date: todayStr(), time: startTime, updates: { '2': endTime, '3': dur } });
+    btn.disabled = false;
+    textEl.classList.remove('hidden');
+    loadEl.classList.add('hidden');
+    if (res.status === 'ok') {
+      showToast('✅ 已更新睡覺結束時間！');
+      closeForm();
+      loadToday();
+    } else {
+      showToast('❌ ' + (res.message || '更新失敗'));
+    }
+    return;
+  }
 
   const today = todayStr();
   const types = getAllTypes();
@@ -578,14 +657,14 @@ function renderCustomTypeList() {
       </div>`;
   }).join('');
 
-  // Custom types (can delete)
+  // Custom types (no delete button here, delete from form instead)
   if (customs.length > 0) {
     html += customs.map(t => `
       <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#f8f8f8;border-radius:10px;margin-bottom:6px">
         <span style="font-size:20px">${t.icon}</span>
         <span style="flex:1;font-weight:600">${t.label}</span>
         <span style="font-size:12px;color:#999">${FIELD_TEMPLATES[t.template]?.label || ''}</span>
-        <button onclick="deleteCustomType('${t.id}')" style="border:none;background:none;font-size:16px;cursor:pointer;opacity:0.5">🗑️</button>
+        <span style="font-size:11px;color:#aaa">自訂</span>
       </div>
     `).join('');
   }
@@ -617,6 +696,13 @@ function deleteCustomType(id) {
   renderSummaryGrid();
   renderCustomTypeList();
   showToast('🗑️ 已刪除');
+}
+
+function deleteCurrentType() {
+  if (!currentForm || !currentForm.startsWith('custom_')) return;
+  if (!confirm('確定要刪除此項目？刪除後無法復原。')) return;
+  deleteCustomType(currentForm);
+  closeForm();
 }
 
 function submitAddType() {
