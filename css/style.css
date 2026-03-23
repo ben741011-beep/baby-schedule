@@ -64,11 +64,12 @@ body {
 }
 #date-today-btn {
   width: auto;
-  padding: 4px 12px;
-  border-radius: 16px;
+  height: auto;
+  padding: 5px 14px;
+  border-radius: 14px;
   font-size: 12px;
   font-weight: 600;
-  background: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.4);
 }
 #today-date {
   font-size: 15px;
