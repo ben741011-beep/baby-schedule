@@ -71,6 +71,7 @@ body {
   font-weight: 700;
   background: rgba(255,255,255,0.4);
   letter-spacing: 1px;
+  white-space: nowrap;
 }
 #today-date {
   font-size: 15px;
