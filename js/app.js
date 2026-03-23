@@ -4,11 +4,27 @@
    =================================================================== */
 
 // ====== Config ======
-const APP_VERSION = 'v1.1.0';
+const APP_VERSION = 'v1.2.0';
 const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbxJc2ZRUIu7yRRT231dY3syylF77m8ERC-Wib9yfW4XRxJInzAXRpOCy491ID3tUOlR/exec';
 let SCRIPT_URL = localStorage.getItem('baby-schedule-url') || DEFAULT_URL;
 
 const $ = s => document.querySelector(s);
+
+function getBabyName() {
+  return localStorage.getItem('baby-name') || '';
+}
+function setBabyName(name) {
+  localStorage.setItem('baby-name', name.trim());
+  updateTitle();
+}
+function updateTitle() {
+  const name = getBabyName();
+  const titleEl = document.querySelector('.app-title');
+  if (titleEl) {
+    const ver = document.getElementById('app-version');
+    titleEl.innerHTML = `🍼 ${name ? name + '的' : '寶寶'}作息表 <small id="app-version" style="font-size:11px;opacity:0.6">${APP_VERSION}</small>`;
+  }
+}
 
 // ====== 欄位模板 ======
 // 每種模板定義 form 怎麼長、怎麼送、怎麼顯示
@@ -249,9 +265,8 @@ function openDatePicker() {
 
 // ====== Init ======
 function init() {
+  updateTitle();
   updateDateDisplay();
-  const verEl = document.getElementById('app-version');
-  if (verEl) verEl.textContent = APP_VERSION;
 
   // Date picker change
   const picker = document.getElementById('date-picker');
@@ -277,7 +292,12 @@ function init() {
       tapCount = 0;
       const url = SCRIPT_URL || '(未設定)';
       const stored = localStorage.getItem('baby-schedule-url') || '(無)';
-      alert(`🔧 除錯資訊\n\n版本: ${APP_VERSION}\n\n使用中 URL:\n${url}\n\nlocalStorage URL:\n${stored}\n\nDEFAULT_URL:\n${DEFAULT_URL}\n\nAPI Debug:\n${JSON.stringify(window._lastDebug, null, 1)}\n\ntodayData:\n${JSON.stringify(todayData, null, 1)}`);
+      const name = getBabyName() || '(未設定)';
+      const newName = prompt(`👶 寶寶名字\n目前: ${name}\n\n輸入新名字（留空不改）:`);
+      if (newName !== null && newName.trim()) {
+        setBabyName(newName);
+        showToast(`✅ 已設定寶寶名字: ${newName.trim()}`);
+      }
     }
     setTimeout(() => tapCount = 0, 2000);
   });
