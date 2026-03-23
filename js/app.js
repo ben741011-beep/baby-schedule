@@ -255,30 +255,73 @@ function goToday() {
   loadToday();
 }
 
-function openDatePicker() {
-  const picker = document.getElementById('date-picker');
-  if (picker) {
-    picker.value = todayStr();
-    picker.showPicker ? picker.showPicker() : picker.click();
+function openQuickDatePicker() {
+  const overlay = document.getElementById('date-picker-overlay');
+  overlay.classList.remove('hidden');
+  showMonthGrid();
+}
+
+function closeDatePicker(e) {
+  if (e.target.id === 'date-picker-overlay') {
+    e.target.classList.add('hidden');
   }
+}
+function closeDatePickerForce() {
+  document.getElementById('date-picker-overlay').classList.add('hidden');
+}
+
+function showMonthGrid() {
+  const body = document.getElementById('dp-body');
+  const title = document.getElementById('dp-title');
+  const now = new Date();
+  const curYear = now.getFullYear();
+  // 顯示最近 12 個月
+  title.textContent = '選擇月份';
+  let html = '<div class="dp-grid dp-month-grid">';
+  for (let i = 0; i < 12; i++) {
+    const d = new Date(curYear, now.getMonth() - i, 1);
+    const y = d.getFullYear();
+    const m = d.getMonth();
+    const label = y === curYear ? `${m + 1}月` : `${y}/${m + 1}月`;
+    const isCurrent = (selectedDate.getFullYear() === y && selectedDate.getMonth() === m);
+    html += `<button class="dp-btn${isCurrent ? ' dp-active' : ''}" onclick="pickMonth(${y}, ${m})">${label}</button>`;
+  }
+  html += '</div>';
+  body.innerHTML = html;
+}
+
+function pickMonth(year, month) {
+  const title = document.getElementById('dp-title');
+  const body = document.getElementById('dp-body');
+  const now = new Date();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  title.textContent = `${year}/${month + 1}月 - 選擇日期`;
+
+  let html = '<button class="dp-back" onclick="showMonthGrid()">◀ 返回月份</button>';
+  html += '<div class="dp-grid dp-day-grid">';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    const isFuture = date > now;
+    const isSelected = (selectedDate.getFullYear() === year && selectedDate.getMonth() === month && selectedDate.getDate() === d);
+    const isToday = (now.getFullYear() === year && now.getMonth() === month && now.getDate() === d);
+    const cls = isFuture ? 'dp-btn dp-disabled' : `dp-btn${isSelected ? ' dp-active' : ''}${isToday ? ' dp-today' : ''}`;
+    html += `<button class="${cls}" ${isFuture ? 'disabled' : `onclick="pickDay(${year}, ${month}, ${d})"`}>${d}</button>`;
+  }
+  html += '</div>';
+  body.innerHTML = html;
+}
+
+function pickDay(year, month, day) {
+  selectedDate = new Date(year, month, day);
+  document.getElementById('date-picker-overlay').classList.add('hidden');
+  updateDateDisplay();
+  loadToday();
 }
 
 // ====== Init ======
 function init() {
   updateTitle();
   updateDateDisplay();
-
-  // Date picker change
-  const picker = document.getElementById('date-picker');
-  if (picker) {
-    picker.addEventListener('change', (e) => {
-      const parts = e.target.value.split('-').map(Number);
-      selectedDate = new Date(parts[0], parts[1] - 1, parts[2]);
-      if (selectedDate > new Date()) selectedDate = new Date();
-      updateDateDisplay();
-      loadToday();
-    });
-  }
 
   renderQuickActions();
   renderSummaryGrid();

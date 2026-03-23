@@ -80,6 +80,78 @@ body {
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 8px;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 4px;
+}
+
+/* ===== Quick Date Picker ===== */
+#date-picker-overlay {
+  align-items: center;
+}
+.date-picker-card {
+  background: #fff;
+  width: 92%;
+  max-width: 360px;
+  border-radius: 20px;
+  overflow: hidden;
+  animation: slideUp 0.25s ease-out;
+}
+.date-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-weight: 700;
+  border-bottom: 1px solid #f0f0f0;
+}
+.dp-grid {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+}
+.dp-month-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+.dp-day-grid {
+  grid-template-columns: repeat(7, 1fr);
+}
+.dp-btn {
+  padding: 10px 4px;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 12px;
+  background: #fafafa;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.dp-btn:active {
+  transform: scale(0.95);
+}
+.dp-active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.dp-today {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.dp-disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.dp-back {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 16px;
+  text-align: left;
 }
 
 /* ===== Quick Actions ===== */
@@ -387,4 +459,5 @@ body {
 @media (min-width: 480px) {
   .overlay { align-items: center; }
   .form-card { border-radius: 20px; max-height: 85vh; }
+  .date-picker-card { width: 380px; }
 }

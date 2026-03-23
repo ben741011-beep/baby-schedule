@@ -17,12 +17,22 @@
   <h1 class="app-title">🍼 寶寶作息表 <small id="app-version" style="font-size:11px;opacity:0.6"></small></h1>
   <div id="date-nav">
     <button id="date-prev" onclick="changeDate(-1)">◀</button>
-    <span id="today-date" onclick="openDatePicker()"></span>
-    <input type="date" id="date-picker" style="position:absolute;opacity:0;width:0;height:0">
+    <span id="today-date" onclick="openQuickDatePicker()"></span>
     <button id="date-next" onclick="changeDate(1)">▶</button>
     <button id="date-today-btn" class="hidden" onclick="goToday()">今天</button>
   </div>
 </header>
+
+<!-- ===== 快速日期選擇器 ===== -->
+<div class="overlay hidden" id="date-picker-overlay" onclick="closeDatePicker(event)">
+  <div class="date-picker-card">
+    <div class="date-picker-header">
+      <span id="dp-title">選擇日期</span>
+      <button class="form-close" onclick="closeDatePickerForce()">✕</button>
+    </div>
+    <div id="dp-body"></div>
+  </div>
+</div>
 
 <!-- ===== 快速記錄按鈕 ===== -->
 <div id="quick-actions"></div>
