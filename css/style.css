@@ -65,11 +65,12 @@ body {
 #date-today-btn {
   width: auto;
   height: auto;
-  padding: 5px 14px;
-  border-radius: 14px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 700;
   background: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
 }
 #today-date {
   font-size: 15px;
