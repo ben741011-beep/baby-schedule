@@ -233,11 +233,17 @@ function renderSummaryGrid() {
 async function loadToday() {
   const types = getAllTypes();
   const sheetNames = types.map(t => t.sheetName);
+  console.log('[loadToday] 查詢日期:', todayStr(), '工作表:', sheetNames);
+  console.log('[loadToday] SCRIPT_URL:', SCRIPT_URL);
   const res = await apiCall({ action: 'getToday', date: todayStr(), sheets: sheetNames });
+  console.log('[loadToday] API 回應:', JSON.stringify(res));
   if (res.status === 'ok' && res.data) {
     todayData = res.data;
     renderSummary();
     renderTimeline();
+  } else {
+    console.error('[loadToday] 讀取失敗:', res);
+    showToast('⚠️ 載入失敗: ' + (res.message || JSON.stringify(res)));
   }
 }
 

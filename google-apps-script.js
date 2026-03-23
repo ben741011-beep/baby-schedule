@@ -90,19 +90,27 @@ function doGet(e) {
 
 // ====== 工具函式 ======
 function getOrCreateSheet(ss, name, customHeaders) {
+  const defaultHeaders = {
+    '餵奶': ['日期', '時間', '類型', '奶量(ml)', '備註'],
+    '睡覺': ['日期', '開始時間', '結束時間', '時長(分鐘)', '備註'],
+    '換尿布': ['日期', '時間', '類型', '備註'],
+    '體溫': ['日期', '時間', '體溫(°C)', '備註'],
+    '擠奶': ['日期', '時間', '側別', '奶量(ml)', '備註'],
+  };
+  const h = customHeaders || defaultHeaders[name];
+
   let sheet = ss.getSheetByName(name);
   if (!sheet) {
     sheet = ss.insertSheet(name);
-    const headers = {
-      '餵奶': ['日期', '時間', '類型', '奶量(ml)', '備註'],
-      '睡覺': ['日期', '開始時間', '結束時間', '時長(分鐘)', '備註'],
-      '換尿布': ['日期', '時間', '類型', '備註'],
-      '體溫': ['日期', '時間', '體溫(°C)', '備註'],
-      '擠奶': ['日期', '時間', '側別', '奶量(ml)', '備註'],
-    };
-    // Use custom headers if provided, otherwise fallback to defaults
-    const h = customHeaders || headers[name];
     if (h) {
+      sheet.getRange(1, 1, 1, h.length).setValues([h]);
+      sheet.getRange(1, 1, 1, h.length).setFontWeight('bold');
+      sheet.setFrozenRows(1);
+    }
+  } else if (h) {
+    // 自動修復：若現有表頭欄數不對，覆蓋為正確表頭
+    const existing = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    if (existing.length !== h.length || existing.join(',') !== h.join(',')) {
       sheet.getRange(1, 1, 1, h.length).setValues([h]);
       sheet.getRange(1, 1, 1, h.length).setFontWeight('bold');
       sheet.setFrozenRows(1);
