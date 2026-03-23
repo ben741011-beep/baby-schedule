@@ -326,24 +326,20 @@ function init() {
   renderQuickActions();
   renderSummaryGrid();
   loadToday();
+}
 
-  // 除錯：點標題 3 下顯示 API 狀態
-  let tapCount = 0;
-  document.querySelector('.app-title')?.addEventListener('click', () => {
-    tapCount++;
-    if (tapCount >= 3) {
-      tapCount = 0;
-      const url = SCRIPT_URL || '(未設定)';
-      const stored = localStorage.getItem('baby-schedule-url') || '(無)';
-      const name = getBabyName() || '(未設定)';
-      const newName = prompt(`👶 寶寶名字\n目前: ${name}\n\n輸入新名字（留空不改）:`);
-      if (newName !== null && newName.trim()) {
-        setBabyName(newName);
-        showToast(`✅ 已設定寶寶名字: ${newName.trim()}`);
-      }
-    }
-    setTimeout(() => tapCount = 0, 2000);
-  });
+// ====== Settings ======
+function openSettings() {
+  const name = getBabyName() || '';
+  const newName = prompt(`👶 設定寶寶名字\n\n目前: ${name || '（未設定）'}\n\n請輸入寶寶名字:`, name);
+  if (newName !== null && newName.trim()) {
+    setBabyName(newName);
+    showToast(`✅ 已設定: ${newName.trim()}的作息表`);
+  } else if (newName !== null && newName.trim() === '') {
+    localStorage.removeItem('baby-name');
+    updateTitle();
+    showToast('✅ 已清除寶寶名字');
+  }
 }
 
 // ====== Render Quick Action Buttons ======

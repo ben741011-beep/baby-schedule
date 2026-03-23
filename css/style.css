@@ -38,9 +38,8 @@ body {
   justify-content: center;
   position: relative;
 }
-#share-btn {
+#share-btn, #settings-btn {
   position: absolute;
-  right: 0;
   background: rgba(255,255,255,0.25);
   border: none;
   color: #fff;
@@ -53,6 +52,8 @@ body {
   align-items: center;
   justify-content: center;
 }
+#share-btn { right: 0; }
+#settings-btn { left: 0; }
 #app-header h1 {
   font-size: 22px;
   font-weight: 800;
