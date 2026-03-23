@@ -883,5 +883,54 @@ function showToast(msg) {
   toastTimer = setTimeout(() => el.classList.add('hidden'), 2500);
 }
 
+// ====== Share ======
+const SHARE_URL = 'https://ben741011-beep.github.io/baby-schedule/';
+
+function openShare() {
+  const overlay = document.getElementById('share-overlay');
+  const qrImg = document.getElementById('share-qr-img');
+  // 用免費 API 動態產生 QR code
+  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(SHARE_URL)}`;
+  // 偵測是否支援 navigator.share
+  const nativeBtn = document.getElementById('btn-native-share');
+  if (nativeBtn) nativeBtn.style.display = navigator.share ? 'flex' : 'none';
+  overlay.classList.remove('hidden');
+}
+
+function shareToLine() {
+  const name = getBabyName();
+  const text = `${name ? name + '的' : '寶寶'}作息表 📋\n記錄喝奶、睡覺、尿布等\n${SHARE_URL}`;
+  window.open(`https://line.me/R/msg/text/?${encodeURIComponent(text)}`, '_blank');
+}
+
+function copyShareLink() {
+  navigator.clipboard.writeText(SHARE_URL).then(() => {
+    showToast('✅ 已複製連結！');
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = SHARE_URL;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✅ 已複製連結！');
+  });
+}
+
+async function nativeShare() {
+  if (!navigator.share) return;
+  const name = getBabyName();
+  try {
+    await navigator.share({
+      title: `${name ? name + '的' : '寶寶'}作息表`,
+      text: '記錄寶寶喝奶、睡覺、尿布等',
+      url: SHARE_URL,
+    });
+  } catch (e) {
+    // user cancelled
+  }
+}
+
 // ====== Start ======
 checkSetup();

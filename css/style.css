@@ -32,6 +32,27 @@ body {
   top: 0;
   z-index: 50;
 }
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+#share-btn {
+  position: absolute;
+  right: 0;
+  background: rgba(255,255,255,0.25);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 #app-header h1 {
   font-size: 22px;
   font-weight: 800;
@@ -460,4 +481,63 @@ body {
   .overlay { align-items: center; }
   .form-card { border-radius: 20px; max-height: 85vh; }
   .date-picker-card { width: 380px; }
+}
+
+/* ===== Share Modal ===== */
+#share-overlay {
+  align-items: center;
+}
+.share-card {
+  background: #fff;
+  width: 92%;
+  max-width: 380px;
+  border-radius: 20px;
+  overflow: hidden;
+  animation: slideUp 0.25s ease-out;
+}
+.share-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-weight: 700;
+  border-bottom: 1px solid #f0f0f0;
+}
+.share-body {
+  padding: 20px;
+}
+.share-qr {
+  text-align: center;
+  padding: 16px;
+  background: #f8f8f8;
+  border-radius: 16px;
+}
+.share-qr img {
+  border-radius: 8px;
+}
+.share-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 16px;
+}
+.share-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 14px;
+  background: #fafafa;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  flex: 1;
+  transition: all 0.15s;
+}
+.share-action-btn:active {
+  transform: scale(0.95);
+  background: #f0f0f0;
 }

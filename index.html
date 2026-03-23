@@ -14,7 +14,10 @@
 
 <!-- ===== 頂部標題 ===== -->
 <header id="app-header">
-  <h1 class="app-title">🍼 寶寶作息表 <small id="app-version" style="font-size:11px;opacity:0.6"></small></h1>
+  <div class="header-top">
+    <h1 class="app-title">🍼 寶寶作息表 <small id="app-version" style="font-size:11px;opacity:0.6"></small></h1>
+    <button id="share-btn" onclick="openShare()" title="分享">📤</button>
+  </div>
   <div id="date-nav">
     <button id="date-prev" onclick="changeDate(-1)">◀</button>
     <span id="today-date" onclick="openQuickDatePicker()"></span>
@@ -92,6 +95,36 @@
     </div>
     <div class="form-footer">
       <button class="btn-submit" onclick="saveSetup()">確認連接</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 分享 Modal ===== -->
+<div class="overlay hidden" id="share-overlay" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="share-card">
+    <div class="share-header">
+      <span>📤 分享給家人</span>
+      <button class="form-close" onclick="document.getElementById('share-overlay').classList.add('hidden')">✕</button>
+    </div>
+    <div class="share-body">
+      <div class="share-qr">
+        <img id="share-qr-img" alt="QR Code" width="200" height="200">
+      </div>
+      <p style="text-align:center;font-size:13px;color:#888;margin:8px 0">掃描 QR Code 即可開啟</p>
+      <div class="share-actions">
+        <button class="share-action-btn share-line" onclick="shareToLine()">
+          <span style="font-size:22px">🟢</span>
+          <span>LINE</span>
+        </button>
+        <button class="share-action-btn share-copy" onclick="copyShareLink()">
+          <span style="font-size:22px">📋</span>
+          <span>複製連結</span>
+        </button>
+        <button class="share-action-btn share-native" id="btn-native-share" onclick="nativeShare()">
+          <span style="font-size:22px">📤</span>
+          <span>其他 App</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
