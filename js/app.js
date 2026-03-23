@@ -179,10 +179,22 @@ async function apiCall(data) {
 // ====== State ======
 let currentForm = null;
 let todayData = {};
+let selectedDate = new Date(); // 目前選擇的日期
 
 function todayStr() {
-  const d = new Date();
+  return formatDateStr(selectedDate);
+}
+
+function realTodayStr() {
+  return formatDateStr(new Date());
+}
+
+function formatDateStr(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function isToday() {
+  return formatDateStr(selectedDate) === formatDateStr(new Date());
 }
 
 function nowTime() {
@@ -190,13 +202,68 @@ function nowTime() {
   return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
+// ====== Date Navigation ======
+function updateDateDisplay() {
+  const d = selectedDate;
+  const weekdays = ['日','一','二','三','四','五','六'];
+  const label = `${d.getMonth()+1}月${d.getDate()}日 星期${weekdays[d.getDay()]}`;
+  $('#today-date').textContent = label;
+
+  // 顯示/隱藏「今天」按鈕
+  const todayBtn = document.getElementById('date-today-btn');
+  if (todayBtn) todayBtn.classList.toggle('hidden', isToday());
+
+  // 未來日期不能按下一天
+  const nextBtn = document.getElementById('date-next');
+  if (nextBtn) nextBtn.disabled = isToday();
+
+  // 更新標題
+  const dayLabel = isToday() ? '今日' : `${d.getMonth()+1}/${d.getDate()}`;
+  const sumTitle = document.getElementById('summary-title');
+  if (sumTitle) sumTitle.textContent = `📋 ${dayLabel}摘要`;
+  const tlTitle = document.getElementById('timeline-title');
+  if (tlTitle) tlTitle.textContent = `🕐 ${dayLabel}記錄`;
+}
+
+function changeDate(delta) {
+  selectedDate.setDate(selectedDate.getDate() + delta);
+  // 不能超過今天
+  if (selectedDate > new Date()) selectedDate = new Date();
+  updateDateDisplay();
+  loadToday();
+}
+
+function goToday() {
+  selectedDate = new Date();
+  updateDateDisplay();
+  loadToday();
+}
+
+function openDatePicker() {
+  const picker = document.getElementById('date-picker');
+  if (picker) {
+    picker.value = todayStr();
+    picker.showPicker ? picker.showPicker() : picker.click();
+  }
+}
+
 // ====== Init ======
 function init() {
-  const d = new Date();
-  const weekdays = ['日','一','二','三','四','五','六'];
-  $('#today-date').textContent = `${d.getMonth()+1}月${d.getDate()}日 星期${weekdays[d.getDay()]}`;
+  updateDateDisplay();
   const verEl = document.getElementById('app-version');
   if (verEl) verEl.textContent = APP_VERSION;
+
+  // Date picker change
+  const picker = document.getElementById('date-picker');
+  if (picker) {
+    picker.addEventListener('change', (e) => {
+      const parts = e.target.value.split('-').map(Number);
+      selectedDate = new Date(parts[0], parts[1] - 1, parts[2]);
+      if (selectedDate > new Date()) selectedDate = new Date();
+      updateDateDisplay();
+      loadToday();
+    });
+  }
 
   renderQuickActions();
   renderSummaryGrid();

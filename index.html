@@ -15,7 +15,13 @@
 <!-- ===== 頂部標題 ===== -->
 <header id="app-header">
   <h1 class="app-title">🍼 寶寶作息表 <small id="app-version" style="font-size:11px;opacity:0.6"></small></h1>
-  <span id="today-date"></span>
+  <div id="date-nav">
+    <button id="date-prev" onclick="changeDate(-1)">◀</button>
+    <span id="today-date" onclick="openDatePicker()"></span>
+    <input type="date" id="date-picker" style="position:absolute;opacity:0;width:0;height:0">
+    <button id="date-next" onclick="changeDate(1)">▶</button>
+    <button id="date-today-btn" class="hidden" onclick="goToday()">今天</button>
+  </div>
 </header>
 
 <!-- ===== 快速記錄按鈕 ===== -->
@@ -23,13 +29,13 @@
 
 <!-- ===== 今日摘要 ===== -->
 <div id="today-summary" class="card">
-  <h2>📋 今日摘要</h2>
+  <h2 id="summary-title">📋 今日摘要</h2>
   <div id="summary-stats" class="summary-grid"></div>
 </div>
 
 <!-- ===== 今日時間線 ===== -->
 <div id="timeline-section" class="card">
-  <h2>🕐 今日記錄</h2>
+  <h2 id="timeline-title">🕐 今日記錄</h2>
   <div id="timeline"></div>
   <div id="timeline-empty" class="empty-hint">還沒有記錄，按上方按鈕開始！</div>
 </div>

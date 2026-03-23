@@ -37,9 +37,46 @@ body {
   font-weight: 800;
   margin-bottom: 4px;
 }
+#date-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 4px;
+  position: relative;
+}
+#date-nav button {
+  background: rgba(255,255,255,0.25);
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#date-nav button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+#date-today-btn {
+  width: auto;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.35);
+}
 #today-date {
-  font-size: 13px;
-  opacity: 0.9;
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0.95;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
 }
 
 /* ===== Quick Actions ===== */
