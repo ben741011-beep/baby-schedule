@@ -33,15 +33,30 @@ function doPost(e) {
 
     if (action === 'getToday') {
       const result = {};
+      const debug = {};
       // Accept dynamic sheet names from client
       const sheets = data.sheets || ['餵奶', '睡覺', '換尿布', '體溫', '擠奶'];
       const today = data.date || Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyy-MM-dd');
 
       sheets.forEach(name => {
         const sheet = ss.getSheetByName(name);
-        if (!sheet) { result[name] = []; return; }
+        if (!sheet) { result[name] = []; debug[name] = 'sheet not found'; return; }
         const allData = sheet.getDataRange().getValues();
+        if (allData.length <= 1) { result[name] = []; debug[name] = 'no data rows'; return; }
         const headers = allData[0];
+        // Debug: show raw first data row info
+        const firstRow = allData[1];
+        const rawDate = firstRow[0];
+        let dateType = typeof rawDate;
+        let dateStr = '';
+        if (rawDate instanceof Date) {
+          dateType = 'Date';
+          dateStr = Utilities.formatDate(rawDate, 'Asia/Taipei', 'yyyy-MM-dd');
+        } else {
+          dateStr = String(rawDate);
+        }
+        debug[name] = { rowCount: allData.length - 1, rawDateType: dateType, rawDateStr: dateStr, compareTo: today, match: dateStr === today };
+
         const rows = allData.slice(1).filter(row => {
           const d = row[0];
           if (d instanceof Date) {
@@ -56,7 +71,7 @@ function doPost(e) {
         });
       });
 
-      return jsonResponse({ status: 'ok', data: result });
+      return jsonResponse({ status: 'ok', data: result, debug: debug });
     }
 
     if (action === 'delete') {

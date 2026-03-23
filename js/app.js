@@ -210,7 +210,7 @@ function init() {
       tapCount = 0;
       const url = SCRIPT_URL || '(未設定)';
       const stored = localStorage.getItem('baby-schedule-url') || '(無)';
-      alert(`🔧 除錯資訊\n\n版本: ${APP_VERSION}\n\n使用中 URL:\n${url}\n\nlocalStorage URL:\n${stored}\n\nDEFAULT_URL:\n${DEFAULT_URL}\n\ntodayData:\n${JSON.stringify(todayData, null, 1)}`);
+      alert(`🔧 除錯資訊\n\n版本: ${APP_VERSION}\n\n使用中 URL:\n${url}\n\nlocalStorage URL:\n${stored}\n\nDEFAULT_URL:\n${DEFAULT_URL}\n\nAPI Debug:\n${JSON.stringify(window._lastDebug, null, 1)}\n\ntodayData:\n${JSON.stringify(todayData, null, 1)}`);
     }
     setTimeout(() => tapCount = 0, 2000);
   });
@@ -253,8 +253,11 @@ async function loadToday() {
   console.log('[loadToday] SCRIPT_URL:', SCRIPT_URL);
   const res = await apiCall({ action: 'getToday', date: todayStr(), sheets: sheetNames });
   console.log('[loadToday] API 回應:', JSON.stringify(res));
+  if (res.debug) console.log('[loadToday] Debug:', JSON.stringify(res.debug));
   if (res.status === 'ok' && res.data) {
     todayData = res.data;
+    // 暫存 debug 供除錯用
+    window._lastDebug = res.debug || null;
     renderSummary();
     renderTimeline();
   } else {
