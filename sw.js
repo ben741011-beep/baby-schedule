@@ -1,4 +1,4 @@
-const CACHE = 'baby-schedule-v4';
+const CACHE = 'baby-schedule-v5';
 const ASSETS = ['./', 'index.html', 'css/style.css', 'js/app.js', 'manifest.json'];
 
 self.addEventListener('install', e => {

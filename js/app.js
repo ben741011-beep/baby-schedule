@@ -4,6 +4,7 @@
    =================================================================== */
 
 // ====== Config ======
+const APP_VERSION = 'v1.1.0';
 const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbxJc2ZRUIu7yRRT231dY3syylF77m8ERC-Wib9yfW4XRxJInzAXRpOCy491ID3tUOlR/exec';
 let SCRIPT_URL = localStorage.getItem('baby-schedule-url') || DEFAULT_URL;
 
@@ -194,10 +195,25 @@ function init() {
   const d = new Date();
   const weekdays = ['日','一','二','三','四','五','六'];
   $('#today-date').textContent = `${d.getMonth()+1}月${d.getDate()}日 星期${weekdays[d.getDay()]}`;
+  const verEl = document.getElementById('app-version');
+  if (verEl) verEl.textContent = APP_VERSION;
 
   renderQuickActions();
   renderSummaryGrid();
   loadToday();
+
+  // 除錯：點標題 3 下顯示 API 狀態
+  let tapCount = 0;
+  document.querySelector('.app-title')?.addEventListener('click', () => {
+    tapCount++;
+    if (tapCount >= 3) {
+      tapCount = 0;
+      const url = SCRIPT_URL || '(未設定)';
+      const stored = localStorage.getItem('baby-schedule-url') || '(無)';
+      alert(`🔧 除錯資訊\n\n版本: ${APP_VERSION}\n\n使用中 URL:\n${url}\n\nlocalStorage URL:\n${stored}\n\nDEFAULT_URL:\n${DEFAULT_URL}\n\ntodayData:\n${JSON.stringify(todayData, null, 1)}`);
+    }
+    setTimeout(() => tapCount = 0, 2000);
+  });
 }
 
 // ====== Render Quick Action Buttons ======
